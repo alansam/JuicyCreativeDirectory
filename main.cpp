@@ -15,9 +15,9 @@ class Rectangle : public Shape {
 public:
   Rectangle(double length = 0, double breadth = 0);
   virtual ~Rectangle() = default;
-  virtual std::string display() const;
-  virtual double area() const;
-  virtual double perimeter() const;
+  virtual std::string display() const override;
+  virtual double area() const override final;
+  virtual double perimeter() const override final;
 
 protected:
   //  hide implementation details from the interface
@@ -25,57 +25,57 @@ protected:
   double breadth_;
 };
 
-class Square : public Rectangle {
+class Square final : public Rectangle {
 public:
   Square(double length = 0);
   virtual ~Square() = default;
-  std::string display() const;
+  std::string display() const override final;
 };
 
 class Triangle : public Shape {
 public:
   Triangle(double base = 0, double height = 0);
   virtual ~Triangle() = default;
-  virtual std::string display() const;
-  virtual double perimeter() const;
-  double area() const;
+  virtual std::string display() const override;
+  virtual double perimeter() const override;
+  double area() const override;
 
 protected:
   double base_;
   double height_;
 };
 
-class Circle : public Shape {
+class Circle final : public Shape {
 public:
   Circle(double radius = 0);
   virtual ~Circle() = default;
-  std::string display() const;
-  double area() const;
-  double perimeter() const;
+  std::string display() const override;
+  double area() const override;
+  double perimeter() const override;
   double circumference() const;
 
 private:
   double radius_;
 };
 
-class RightTriangle : public Triangle {
+class RightTriangle final : public Triangle {
 public:
   RightTriangle(double base = 0, double height = 0);
   virtual ~RightTriangle() = default;
-  std::string display() const;
-  double perimeter() const;
+  std::string display() const override;
+  double perimeter() const override;
 
 private:
   double hypotenuse_;
 };
 
-class EquilateralTriangle : public Triangle {
+class EquilateralTriangle final : public Triangle {
 public:
   EquilateralTriangle(double base = 0);
   virtual ~EquilateralTriangle() = default;
-  std::string display() const;
-  double perimeter() const;
-  double area() const;
+  std::string display() const override;
+  double perimeter() const override;
+  double area() const override;
 };
 
 int main() {
