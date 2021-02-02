@@ -13,26 +13,11 @@ public:
 
 class Rectangle : public Shape {
 public:
-  Rectangle(double length = 0, double breadth = 0)
-    : length_(length), breadth_(breadth) {}
+  Rectangle(double length = 0, double breadth = 0);
   virtual ~Rectangle() = default;
-
-  std::string display() const {
-    std::ostringstream disp;
-    disp << "length "<< length_
-         << ", breadth " << breadth_
-         << ", perimeter " << perimeter()
-         << ", area " << std::fixed << area();
-    return disp.str();
-  }
-
-  virtual double area() const {
-    return length_ * breadth_;
-  }
-
-  virtual double perimeter() const {
-    return 2 * (length_ + breadth_);
-  }
+  virtual std::string display() const;
+  virtual double area() const;
+  virtual double perimeter() const;
 
 protected:
   //  hide implementation details from the interface
@@ -42,44 +27,18 @@ protected:
 
 class Square : public Rectangle {
 public:
-  Square(double length = 0) {
-    length_ = length;
-    breadth_ = length;
-  }
+  Square(double length = 0);
   virtual ~Square() = default;
-
-  std::string display() const {
-    std::ostringstream disp;
-    disp << "length " << length_
-         << ", perimeter " << perimeter()
-         << ", area " << std::fixed << area();
-    return disp.str();
-  }
+  std::string display() const;
 };
 
 class Triangle : public Shape {
 public:
-  Triangle(double base = 0, double height = 0)
-    : base_(base), height_(height) {}
+  Triangle(double base = 0, double height = 0);
   virtual ~Triangle() = default;
-
-
-  virtual std::string display() const {
-    std::ostringstream disp;
-    disp << "base " << base_
-         << ", height " << height_
-         << ", area " << std::fixed << area();
-    return disp.str();
-  }
-
-  virtual double perimeter() const {
-    //  TODO: calculate perimeter
-    return NAN;
-  }
-
-  double area() const {
-    return (base_ / 2.0) * height_;
-  }
+  virtual std::string display() const;
+  virtual double perimeter() const;
+  double area() const;
 
 protected:
   double base_;
@@ -88,29 +47,12 @@ protected:
 
 class Circle : public Shape {
 public:
-  Circle(double radius = 0)
-    : radius_(radius) {}
+  Circle(double radius = 0);
   virtual ~Circle() = default;
-
-  std::string display() const {
-    std::ostringstream disp;
-    disp << "radius " << radius_
-         << ", circumference " << circumference()
-         << ", area " << area();
-    return disp.str();
-  }
-
-  double area() const {
-    return M_PI * (radius_ * radius_);
-  }
-
-  double perimeter() const {
-    return circumference();
-  }
-
-  double circumference() const {
-    return M_PI * (radius_ * 2.0);
-  }
+  std::string display() const;
+  double area() const;
+  double perimeter() const;
+  double circumference() const;
 
 private:
   double radius_;
@@ -118,26 +60,10 @@ private:
 
 class RightTriangle : public Triangle {
 public:
-  RightTriangle(double base = 0, double height = 0) {
-    base_ = base;
-    height_ = height;
-    hypotenuse_ = std::sqrt((base_ * base_) + (height_ * height_));
-  }
+  RightTriangle(double base = 0, double height = 0);
   virtual ~RightTriangle() = default;
-
-  std::string display() const {
-    std::ostringstream disp;
-    disp << "base " << base_
-         << ", height " << height_
-         << ", hypotenuse " << hypotenuse_
-         << ", perimeter " << perimeter()
-         << ", area " << std::fixed << area();
-    return disp.str();
-  }
-
-  double perimeter() const {
-    return hypotenuse_ + base_ + height_;
-  }
+  std::string display() const;
+  double perimeter() const;
 
 private:
   double hypotenuse_;
@@ -145,29 +71,11 @@ private:
 
 class EquilateralTriangle : public Triangle {
 public:
-  EquilateralTriangle(double base = 0) {
-    base_ = base;
-    height_ = sqrt(3.0) / 2 * base_;
-  }
+  EquilateralTriangle(double base = 0);
   virtual ~EquilateralTriangle() = default;
-
-  std::string display() const {
-    std::ostringstream disp;
-    disp << "base " << base_
-         << ", height " << height_
-         << ", perimeter " << perimeter()
-         << ", area " << std::fixed << area();
-    return disp.str();
-  }
-
-  double perimeter() const {
-    return base_ + base_ + base_;
-  }
-
-  double area() const {
-    return sqrt(3.0) / 4 * (base_ * base_);
-  }
-
+  std::string display() const;
+  double perimeter() const;
+  double area() const;
 };
 
 int main() {
@@ -194,3 +102,122 @@ int main() {
 
   return 0;
 }
+
+Rectangle::Rectangle(double length, double breadth)
+  : length_(length), breadth_(breadth) {}
+
+std::string Rectangle::display() const {
+  std::ostringstream disp;
+  disp << "length "<< length_
+        << ", breadth " << breadth_
+        << ", perimeter " << perimeter()
+        << ", area " << std::fixed << area();
+  return disp.str();
+}
+
+double Rectangle::area() const {
+  return length_ * breadth_;
+}
+
+double Rectangle::perimeter() const {
+  return 2 * (length_ + breadth_);
+}
+
+Square::Square(double length) {
+  length_ = length;
+  breadth_ = length;
+}
+
+std::string Square::display() const {
+  std::ostringstream disp;
+  disp << "length " << length_
+        << ", perimeter " << perimeter()
+        << ", area " << std::fixed << area();
+  return disp.str();
+}
+
+Triangle::Triangle(double base, double height)
+  : base_(base), height_(height) {}
+
+
+std::string Triangle::display() const {
+  std::ostringstream disp;
+  disp << "base " << base_
+        << ", height " << height_
+        << ", area " << std::fixed << area();
+  return disp.str();
+}
+
+double Triangle::perimeter() const {
+  //  TODO: calculate perimeter
+  return NAN;
+}
+
+double Triangle::area() const {
+  return (base_ / 2.0) * height_;
+}
+
+Circle::Circle(double radius)
+  : radius_(radius) {}
+
+std::string Circle::display() const {
+  std::ostringstream disp;
+  disp << "radius " << radius_
+        << ", circumference " << circumference()
+        << ", area " << area();
+  return disp.str();
+}
+
+double Circle::area() const {
+  return M_PI * (radius_ * radius_);
+}
+
+double Circle::perimeter() const {
+  return circumference();
+}
+
+double Circle::circumference() const {
+  return M_PI * (radius_ * 2.0);
+}
+
+RightTriangle::RightTriangle(double base, double height) {
+  base_ = base;
+  height_ = height;
+  hypotenuse_ = std::sqrt((base_ * base_) + (height_ * height_));
+}
+
+std::string RightTriangle::display() const {
+  std::ostringstream disp;
+  disp << "base " << base_
+        << ", height " << height_
+        << ", hypotenuse " << hypotenuse_
+        << ", perimeter " << perimeter()
+        << ", area " << std::fixed << area();
+  return disp.str();
+}
+
+double RightTriangle::perimeter() const {
+  return hypotenuse_ + base_ + height_;
+}
+
+  EquilateralTriangle::EquilateralTriangle(double base) {
+    base_ = base;
+    height_ = sqrt(3.0) / 2 * base_;
+  }
+
+  std::string EquilateralTriangle::display() const {
+    std::ostringstream disp;
+    disp << "base " << base_
+         << ", height " << height_
+         << ", perimeter " << perimeter()
+         << ", area " << std::fixed << area();
+    return disp.str();
+  }
+
+  double EquilateralTriangle::perimeter() const {
+    return base_ + base_ + base_;
+  }
+
+  double EquilateralTriangle::area() const {
+    return sqrt(3.0) / 4 * (base_ * base_);
+  }
