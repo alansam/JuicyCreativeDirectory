@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <tuple>
 #include <cmath>
 
 class Shape {
@@ -9,6 +10,8 @@ public:
   virtual std::string display() const = 0;
   virtual double area() const = 0;
   virtual double perimeter() const = 0;
+  virtual std::tuple<double, double, double, double>
+    dimensions() const = 0;
 };
 
 class Rectangle : public Shape {
@@ -18,6 +21,8 @@ public:
   virtual std::string display() const override;
   virtual double area() const override final;
   virtual double perimeter() const override final;
+  virtual std::tuple<double, double, double, double>
+    dimensions() const override;
 
 protected:
   //  hide implementation details from the interface
@@ -30,6 +35,8 @@ public:
   Square(double length = 0);
   virtual ~Square() = default;
   std::string display() const override final;
+  virtual std::tuple<double, double, double, double>
+    dimensions() const override;
 };
 
 class Triangle : public Shape {
@@ -38,7 +45,9 @@ public:
   virtual ~Triangle() = default;
   virtual std::string display() const override;
   virtual double perimeter() const override;
-  double area() const override;
+  virtual double area() const override;
+  virtual std::tuple<double, double, double, double>
+    dimensions() const override;
 
 protected:
   double base_;
@@ -53,19 +62,21 @@ public:
   double area() const override;
   double perimeter() const override;
   double circumference() const;
+  std::tuple<double, double, double, double>
+    dimensions() const override;
 
 private:
   double radius_;
 };
 
-class RightTriangle final : public Triangle {
+class RightTriangle : public Triangle {
 public:
   RightTriangle(double base = 0, double height = 0);
   virtual ~RightTriangle() = default;
   std::string display() const override;
   double perimeter() const override;
 
-private:
+protected:
   double hypotenuse_;
 };
 
@@ -76,6 +87,16 @@ public:
   std::string display() const override;
   double perimeter() const override;
   double area() const override;
+  virtual std::tuple<double, double, double, double>
+    dimensions() const override;
+};
+
+class IsoscelesTriangle final : public RightTriangle {
+public:
+  IsoscelesTriangle(double base = 0, double height = 0); 
+  virtual ~IsoscelesTriangle() = default;
+  std::string display() const override;
+  double perimeter() const override;
 };
 
 int main() {
@@ -85,6 +106,7 @@ int main() {
   auto cshape = Circle(10.0);
   auto xshape = RightTriangle(3., 4.);
   auto qshape = EquilateralTriangle(4.0);
+  auto ishape = IsoscelesTriangle(6., 4.);
 
   std::cout << "Rectangle            : "
             << rshape.display() << '\n';
@@ -98,13 +120,69 @@ int main() {
             << xshape.display() << '\n';
   std::cout << "Equilateral Triangle : "
             << qshape.display() << '\n';
+  std::cout << "Isosceles Triangle   : "
+            << ishape.display() << '\n';
   std::cout << std::endl;
+
+  {
+    auto [length, breadth, d3, d4] = rshape.dimensions();
+    std::cout << "length " << length
+              << ", breadth " << breadth << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    auto [length, d2, d3, d4] = sshape.dimensions();
+    std::cout << "length " << length << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    auto [base, height, d3, d4] = tshape.dimensions();
+    std::cout << "nase " << base
+              << ", height " << height << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    auto [radius, d2, d3, d4] = cshape.dimensions();
+    std::cout << "radius " << radius << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    auto [base, height, d3, d4] = xshape.dimensions();
+    std::cout << "base " << base
+              << ", height " << height << '\n';
+    std::cout << "perimiter " << qshape.perimeter() << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    auto [base, height, d3, d4] = qshape.dimensions();
+    std::cout << "base " << base
+              << "\nheight " << height << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    auto [base, height, d3, d4] = ishape.dimensions();
+    std::cout << "base " << base
+              << "\nheight " << height << '\n';
+    std::cout << std::endl;
+  }
 
   return 0;
 }
 
 Rectangle::Rectangle(double length, double breadth)
   : length_(length), breadth_(breadth) {}
+
+std::tuple<double, double, double, double>
+  Rectangle::dimensions() const {
+  auto rt = std::make_tuple(length_, breadth_, NAN, NAN);
+  return rt;
+}
 
 std::string Rectangle::display() const {
   std::ostringstream disp;
@@ -128,6 +206,12 @@ Square::Square(double length) {
   breadth_ = length;
 }
 
+std::tuple<double, double, double, double>
+  Square::dimensions() const {
+  auto rt = std::make_tuple(length_, NAN, NAN, NAN);
+  return rt;
+}
+
 std::string Square::display() const {
   std::ostringstream disp;
   disp << "length " << length_
@@ -139,6 +223,11 @@ std::string Square::display() const {
 Triangle::Triangle(double base, double height)
   : base_(base), height_(height) {}
 
+std::tuple<double, double, double, double>
+  Triangle::dimensions() const {
+  auto rt = std::make_tuple(base_, height_, NAN, NAN);
+  return rt;
+}
 
 std::string Triangle::display() const {
   std::ostringstream disp;
@@ -159,6 +248,12 @@ double Triangle::area() const {
 
 Circle::Circle(double radius)
   : radius_(radius) {}
+
+std::tuple<double, double, double, double>
+  Circle::dimensions() const {
+  auto rt = std::make_tuple(radius_, NAN, NAN, NAN);
+  return rt;
+}
 
 std::string Circle::display() const {
   std::ostringstream disp;
@@ -189,10 +284,10 @@ RightTriangle::RightTriangle(double base, double height) {
 std::string RightTriangle::display() const {
   std::ostringstream disp;
   disp << "base " << base_
-        << ", height " << height_
-        << ", hypotenuse " << hypotenuse_
-        << ", perimeter " << perimeter()
-        << ", area " << std::fixed << area();
+       << ", height " << height_
+       << ", hypotenuse " << hypotenuse_
+       << ", perimeter " << perimeter()
+       << ", area " << std::fixed << area();
   return disp.str();
 }
 
@@ -200,24 +295,52 @@ double RightTriangle::perimeter() const {
   return hypotenuse_ + base_ + height_;
 }
 
-  EquilateralTriangle::EquilateralTriangle(double base) {
-    base_ = base;
-    height_ = sqrt(3.0) / 2 * base_;
-  }
+EquilateralTriangle::EquilateralTriangle(double base) {
+  base_ = base;
+  height_ = sqrt(3.0) / 2 * base_;
+  //height_ = sqrt( (base * base) - ((base / 2) * (base / 2)) );
+  //height_ = sqrt( (base * base) - (base * base / 4) );
+}
 
-  std::string EquilateralTriangle::display() const {
-    std::ostringstream disp;
-    disp << "base " << base_
-         << ", height " << height_
-         << ", perimeter " << perimeter()
-         << ", area " << std::fixed << area();
-    return disp.str();
-  }
+std::string EquilateralTriangle::display() const {
+  std::ostringstream disp;
+  disp << "base " << base_
+        << ", height " << height_
+        << ", perimeter " << perimeter()
+        << ", area " << std::fixed << area();
+  return disp.str();
+}
 
-  double EquilateralTriangle::perimeter() const {
-    return base_ + base_ + base_;
-  }
+std::tuple<double, double, double, double>
+  EquilateralTriangle::dimensions() const {
+  auto rt = std::make_tuple(base_, height_, NAN, NAN);
+  return rt;
+}
 
-  double EquilateralTriangle::area() const {
-    return sqrt(3.0) / 4 * (base_ * base_);
-  }
+double EquilateralTriangle::perimeter() const {
+  return base_ + base_ + base_;
+}
+
+double EquilateralTriangle::area() const {
+  return sqrt(3.0) / 4 * (base_ * base_);
+}
+
+IsoscelesTriangle::IsoscelesTriangle(double base, double height) {
+  base_ = base;
+  height_ = height;
+  hypotenuse_ = sqrt((base_ * base_ / 4) + (height_ * height_));
+}
+
+std::string IsoscelesTriangle::display() const {
+  std::ostringstream disp;
+  disp << "base " << base_
+       << ", height " << height_
+       << ", hypotenuse " << hypotenuse_
+       << ", perimeter " << perimeter()
+       << ", area " << std::fixed << area();
+  return disp.str();
+}
+
+double IsoscelesTriangle::perimeter() const {
+  return hypotenuse_ + hypotenuse_ + base_;
+}
