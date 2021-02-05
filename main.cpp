@@ -1,3 +1,11 @@
+//
+//  main.cpp
+//  JuicyCreativeDirectory
+//
+//  Created by Alan Sampson on 2/2/21.
+//  2021-02-02 03:23:35.0492
+//
+
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -5,6 +13,10 @@
 #include <tuple>
 #include <cmath>
 
+//  MARK: - Definitions.
+/*
+ *  MARK: class Shape
+ */
 class Shape {
 public:
   virtual std::string display() const = 0;
@@ -14,6 +26,9 @@ public:
     dimensions() const = 0;
 };
 
+/*
+ *  MARK: class Rectangle
+ */
 class Rectangle : public Shape {
 public:
   Rectangle(double length = 0, double breadth = 0);
@@ -30,6 +45,9 @@ protected:
   double breadth_;
 };
 
+/*
+ *  MARK: class Square
+ */
 class Square final : public Rectangle {
 public:
   Square(double length = 0);
@@ -39,6 +57,9 @@ public:
     dimensions() const override;
 };
 
+/*
+ *  MARK: class Triangle
+ */
 class Triangle : public Shape {
 public:
   Triangle(double base = 0, double height = 0);
@@ -54,6 +75,9 @@ protected:
   double height_;
 };
 
+/*
+ *  MARK: class Circle
+ */
 class Circle final : public Shape {
 public:
   Circle(double radius = 0);
@@ -69,6 +93,9 @@ private:
   double radius_;
 };
 
+/*
+ *  MARK: class RightTriangle
+ */
 class RightTriangle : public Triangle {
 public:
   RightTriangle(double base = 0, double height = 0);
@@ -80,6 +107,9 @@ protected:
   double hypotenuse_;
 };
 
+/*
+ *  MARK: class EquilateralTriangle
+ */
 class EquilateralTriangle final : public Triangle {
 public:
   EquilateralTriangle(double base = 0);
@@ -91,6 +121,9 @@ public:
     dimensions() const override;
 };
 
+/*
+ *  MARK: class IsoscelesTriangle
+ */
 class IsoscelesTriangle final : public RightTriangle {
 public:
   IsoscelesTriangle(double base = 0, double height = 0); 
@@ -99,6 +132,10 @@ public:
   double perimeter() const override;
 };
 
+//  MARK: - Implementation.
+/*
+ *  MARK: main()
+ */
 int main() {
   auto rshape = Rectangle(54.3, 21.09);
   auto sshape = Square(45.6);
@@ -175,16 +212,27 @@ int main() {
   return 0;
 }
 
+//  MARK: - Class Rectangle Implementation.
+/*
+ *  MARK: Rectangle::Rectangle() - default c'tor
+ */
 Rectangle::Rectangle(double length, double breadth)
   : length_(length), breadth_(breadth) {}
 
+/*
+ *  MARK: Rectangle::dimensions()
+ */
 std::tuple<double, double, double, double>
-  Rectangle::dimensions() const {
+Rectangle::dimensions() const {
   auto rt = std::make_tuple(length_, breadth_, NAN, NAN);
   return rt;
 }
 
-std::string Rectangle::display() const {
+/*
+ *  MARK: Rectangle::display()
+ */
+std::string
+Rectangle::display() const {
   std::ostringstream disp;
   disp << "length "<< length_
         << ", breadth " << breadth_
@@ -193,26 +241,45 @@ std::string Rectangle::display() const {
   return disp.str();
 }
 
-double Rectangle::area() const {
+/*
+ *  MARK: Rectangle::area()
+ */
+double
+Rectangle::area() const {
   return length_ * breadth_;
 }
 
-double Rectangle::perimeter() const {
+/*
+ *  MARK: Rectangle::perimeter()
+ */
+double
+Rectangle::perimeter() const {
   return 2 * (length_ + breadth_);
 }
 
+//  MARK: - Class Square Implementation.
+/*
+ *  MARK: Square::Square() - default c'tor
+ */
 Square::Square(double length) {
   length_ = length;
   breadth_ = length;
 }
 
+/*
+ *  MARK: Square::dimensions()
+ */
 std::tuple<double, double, double, double>
-  Square::dimensions() const {
+Square::dimensions() const {
   auto rt = std::make_tuple(length_, NAN, NAN, NAN);
   return rt;
 }
 
-std::string Square::display() const {
+/*
+ *  MARK: Square::display()
+ */
+std::string
+Square::display() const {
   std::ostringstream disp;
   disp << "length " << length_
         << ", perimeter " << perimeter()
@@ -220,16 +287,27 @@ std::string Square::display() const {
   return disp.str();
 }
 
+//  MARK: - Class Triangle Implementation.
+/*
+ *  MARK: Triangle::Triangle() - default c'tor
+ */
 Triangle::Triangle(double base, double height)
   : base_(base), height_(height) {}
 
+/*
+ *  MARK: Triangle::dimensions()
+ */
 std::tuple<double, double, double, double>
-  Triangle::dimensions() const {
+Triangle::dimensions() const {
   auto rt = std::make_tuple(base_, height_, NAN, NAN);
   return rt;
 }
 
-std::string Triangle::display() const {
+/*
+ *  MARK: Triangle::display()
+ */
+std::string
+Triangle::display() const {
   std::ostringstream disp;
   disp << "base " << base_
         << ", height " << height_
@@ -237,25 +315,44 @@ std::string Triangle::display() const {
   return disp.str();
 }
 
-double Triangle::perimeter() const {
+/*
+ *  MARK: Triangle::perimeter()
+ */
+double
+Triangle::perimeter() const {
   //  TODO: calculate perimeter
   return NAN;
 }
 
-double Triangle::area() const {
+/*
+ *  MARK: Triangle::area()
+ */
+double
+Triangle::area() const {
   return (base_ / 2.0) * height_;
 }
 
+//  MARK: - Class Circle Implementation.
+/*
+ *  MARK: Circle::Circle() - default c'tor
+ */
 Circle::Circle(double radius)
   : radius_(radius) {}
 
+/*
+ *  MARK: Circle::dimensions()
+ */
 std::tuple<double, double, double, double>
-  Circle::dimensions() const {
+Circle::dimensions() const {
   auto rt = std::make_tuple(radius_, NAN, NAN, NAN);
   return rt;
 }
 
-std::string Circle::display() const {
+/*
+ *  MARK: Circle::display()
+ */
+std::string
+Circle::display() const {
   std::ostringstream disp;
   disp << "radius " << radius_
         << ", circumference " << circumference()
@@ -263,25 +360,45 @@ std::string Circle::display() const {
   return disp.str();
 }
 
-double Circle::area() const {
+/*
+ *  MARK: Circle::area()
+ */
+double
+Circle::area() const {
   return M_PI * (radius_ * radius_);
 }
 
-double Circle::perimeter() const {
+/*
+ *  MARK: Circle::perimeter()
+ */
+double
+Circle::perimeter() const {
   return circumference();
 }
 
-double Circle::circumference() const {
+/*
+ *  MARK: Circle::circumference()
+ */
+double
+Circle::circumference() const {
   return M_PI * (radius_ * 2.0);
 }
 
+//  MARK: - Class RightTriangle Implementation.
+/*
+ *  MARK: RightTriangle::RightTriangle() - default c'tor
+ */
 RightTriangle::RightTriangle(double base, double height) {
   base_ = base;
   height_ = height;
   hypotenuse_ = std::sqrt((base_ * base_) + (height_ * height_));
 }
 
-std::string RightTriangle::display() const {
+/*
+ *  MARK: RightTriangle::display()
+ */
+std::string
+RightTriangle::display() const {
   std::ostringstream disp;
   disp << "base " << base_
        << ", height " << height_
@@ -291,10 +408,18 @@ std::string RightTriangle::display() const {
   return disp.str();
 }
 
-double RightTriangle::perimeter() const {
+/*
+ *  MARK: RightTriangle::perimeter()
+ */
+double
+RightTriangle::perimeter() const {
   return hypotenuse_ + base_ + height_;
 }
 
+//  MARK: - Class EquilateralTriangle Implementation.
+/*
+ *  MARK: EquilateralTriangle::EquilateralTriangle() - default c'tor
+ */
 EquilateralTriangle::EquilateralTriangle(double base) {
   base_ = base;
   height_ = sqrt(3.0) / 2 * base_;
@@ -302,7 +427,11 @@ EquilateralTriangle::EquilateralTriangle(double base) {
   //height_ = sqrt( (base * base) - (base * base / 4) );
 }
 
-std::string EquilateralTriangle::display() const {
+/*
+ *  MARK: EquilateralTriangle::display()
+ */
+std::string
+EquilateralTriangle::display() const {
   std::ostringstream disp;
   disp << "base " << base_
         << ", height " << height_
@@ -311,27 +440,46 @@ std::string EquilateralTriangle::display() const {
   return disp.str();
 }
 
+/*
+ *  MARK: EquilateralTriangle::dimensions()
+ */
 std::tuple<double, double, double, double>
-  EquilateralTriangle::dimensions() const {
+EquilateralTriangle::dimensions() const {
   auto rt = std::make_tuple(base_, height_, NAN, NAN);
   return rt;
 }
 
-double EquilateralTriangle::perimeter() const {
+/*
+ *  MARK: EquilateralTriangle::perimeter()
+ */
+double
+EquilateralTriangle::perimeter() const {
   return base_ + base_ + base_;
 }
 
-double EquilateralTriangle::area() const {
+/*
+ *  MARK: EquilateralTriangle::area()
+ */
+double
+EquilateralTriangle::area() const {
   return sqrt(3.0) / 4 * (base_ * base_);
 }
 
+//  MARK: - Class IsoscelesTriangle Implementation.
+/*
+ *  MARK: IsoscelesTriangle::IsoscelesTriangle() - default c'tor
+ */
 IsoscelesTriangle::IsoscelesTriangle(double base, double height) {
   base_ = base;
   height_ = height;
   hypotenuse_ = sqrt((base_ * base_ / 4) + (height_ * height_));
 }
 
-std::string IsoscelesTriangle::display() const {
+/*
+ *  MARK: IsoscelesTriangle::display()
+ */
+std::string
+IsoscelesTriangle::display() const {
   std::ostringstream disp;
   disp << "base " << base_
        << ", height " << height_
@@ -341,6 +489,10 @@ std::string IsoscelesTriangle::display() const {
   return disp.str();
 }
 
-double IsoscelesTriangle::perimeter() const {
+/*
+ *  MARK: IsoscelesTriangle::perimeter()
+ */
+double
+IsoscelesTriangle::perimeter() const {
   return hypotenuse_ + hypotenuse_ + base_;
 }
