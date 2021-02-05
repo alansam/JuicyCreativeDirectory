@@ -15,7 +15,7 @@
 
 //  MARK: - Definitions.
 /*
- *  MARK: class Shape
+ *  MARK: Class Shape
  */
 class Shape {
 public:
@@ -27,7 +27,7 @@ public:
 };
 
 /*
- *  MARK: class Rectangle
+ *  MARK: Class Rectangle
  */
 class Rectangle : public Shape {
 public:
@@ -46,7 +46,7 @@ protected:
 };
 
 /*
- *  MARK: class Square
+ *  MARK: Class Square
  */
 class Square final : public Rectangle {
 public:
@@ -58,7 +58,7 @@ public:
 };
 
 /*
- *  MARK: class Triangle
+ *  MARK: Class Triangle
  */
 class Triangle : public Shape {
 public:
@@ -73,10 +73,12 @@ public:
 protected:
   double base_;
   double height_;
+  double sideA_;
+  double sideB_;
 };
 
 /*
- *  MARK: class Circle
+ *  MARK: Class Circle
  */
 class Circle final : public Shape {
 public:
@@ -94,42 +96,42 @@ private:
 };
 
 /*
- *  MARK: class RightTriangle
+ *  MARK: Class RightTriangle
  */
 class RightTriangle : public Triangle {
 public:
   RightTriangle(double base = 0, double height = 0);
   virtual ~RightTriangle() = default;
   std::string display() const override;
-  double perimeter() const override;
+//  double perimeter() const override;
 
 protected:
   double hypotenuse_;
 };
 
 /*
- *  MARK: class EquilateralTriangle
+ *  MARK: Class IsoscelesTriangle
  */
-class EquilateralTriangle final : public Triangle {
+class IsoscelesTriangle : public Triangle {
 public:
-  EquilateralTriangle(double base = 0);
-  virtual ~EquilateralTriangle() = default;
+  IsoscelesTriangle(double base = 0, double height = 0);
+  virtual ~IsoscelesTriangle() = default;
   std::string display() const override;
-  double perimeter() const override;
-  double area() const override;
-  virtual std::tuple<double, double, double, double>
-    dimensions() const override;
+//  double perimeter() const override;
 };
 
 /*
- *  MARK: class IsoscelesTriangle
+ *  MARK: Class EquilateralTriangle
  */
-class IsoscelesTriangle final : public RightTriangle {
+class EquilateralTriangle final : public IsoscelesTriangle {
 public:
-  IsoscelesTriangle(double base = 0, double height = 0); 
-  virtual ~IsoscelesTriangle() = default;
-  std::string display() const override;
-  double perimeter() const override;
+  EquilateralTriangle(double base = 0);
+  virtual ~EquilateralTriangle() = default;
+  virtual std::string display() const override;
+//  virtual double perimeter() const override;
+  virtual double area() const override;
+//  virtual std::tuple<double, double, double, double>
+//    dimensions() const override;
 };
 
 //  MARK: - Implementation.
@@ -162,6 +164,7 @@ int main() {
   std::cout << std::endl;
 
   {
+    std::cout << "Shape - Rectangle\n";
     auto [length, breadth, d3, d4] = rshape.dimensions();
     std::cout << "length " << length
               << ", breadth " << breadth << '\n';
@@ -169,43 +172,53 @@ int main() {
   }
 
   {
+    std::cout << "Shape - Square\n";
     auto [length, d2, d3, d4] = sshape.dimensions();
     std::cout << "length " << length << '\n';
     std::cout << std::endl;
   }
 
   {
-    auto [base, height, d3, d4] = tshape.dimensions();
-    std::cout << "nase " << base
-              << ", height " << height << '\n';
-    std::cout << std::endl;
-  }
-
-  {
+    std::cout << "Shape - Circle\n";
     auto [radius, d2, d3, d4] = cshape.dimensions();
     std::cout << "radius " << radius << '\n';
     std::cout << std::endl;
   }
 
   {
-    auto [base, height, d3, d4] = xshape.dimensions();
+    std::cout << "Shape - Triangle\n";
+    auto [base, height, sideA, sideB] = tshape.dimensions();
     std::cout << "base " << base
               << ", height " << height << '\n';
-    std::cout << "perimiter " << qshape.perimeter() << '\n';
     std::cout << std::endl;
   }
 
   {
-    auto [base, height, d3, d4] = qshape.dimensions();
+    std::cout << "Shape - RightTriangle\n";
+    auto [base, height, sideA, sideB] = xshape.dimensions();
     std::cout << "base " << base
-              << "\nheight " << height << '\n';
+              << ", height " << height
+              << ", hypotenuse " << (sideB != height ? sideB : sideA) << '\n';
+    std::cout << "perimiter " << xshape.perimeter() << '\n';
     std::cout << std::endl;
   }
 
   {
-    auto [base, height, d3, d4] = ishape.dimensions();
+    std::cout << "Shape - EquilateralTriangle\n";
+    auto [base, height, sideA, sideB] = qshape.dimensions();
     std::cout << "base " << base
               << "\nheight " << height << '\n';
+    std::cout << "perimiter " << qshape.IsoscelesTriangle::perimeter() << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    std::cout << "Shape - IsoscelesTriangle\n";
+    auto [base, height, sideA, sideB] = ishape.dimensions();
+    std::cout << "base " << base
+              << " sides " << sideA
+              << "\nheight " << height << '\n';
+    std::cout << "perimiter " << ishape.perimeter() << '\n';
     std::cout << std::endl;
   }
 
@@ -292,14 +305,14 @@ Square::display() const {
  *  MARK: Triangle::Triangle() - default c'tor
  */
 Triangle::Triangle(double base, double height)
-  : base_(base), height_(height) {}
+  : base_(base), height_(height), sideA_(NAN), sideB_(NAN) {}
 
 /*
  *  MARK: Triangle::dimensions()
  */
 std::tuple<double, double, double, double>
 Triangle::dimensions() const {
-  auto rt = std::make_tuple(base_, height_, NAN, NAN);
+  auto rt = std::make_tuple(base_, height_, sideB_, sideB_);
   return rt;
 }
 
@@ -321,7 +334,14 @@ Triangle::display() const {
 double
 Triangle::perimeter() const {
   //  TODO: calculate perimeter
-  return NAN;
+  double perim;
+  if (std::isnan(base_) || std::isnan(sideA_) || std::isnan(sideB_)) {
+    perim = NAN;
+  }
+  else {
+    perim = base_ + sideA_ + sideB_;
+  }
+  return perim;
 }
 
 /*
@@ -389,9 +409,9 @@ Circle::circumference() const {
  *  MARK: RightTriangle::RightTriangle() - default c'tor
  */
 RightTriangle::RightTriangle(double base, double height) {
-  base_ = base;
-  height_ = height;
-  hypotenuse_ = std::sqrt((base_ * base_) + (height_ * height_));
+  base_  = base;
+  sideA_ = height_ = height;
+  sideB_ = hypotenuse_ = std::sqrt((base_ * base_) + (height_ * height_));
 }
 
 /*
@@ -408,20 +428,20 @@ RightTriangle::display() const {
   return disp.str();
 }
 
-/*
- *  MARK: RightTriangle::perimeter()
- */
-double
-RightTriangle::perimeter() const {
-  return hypotenuse_ + base_ + height_;
-}
+///*
+// *  MARK: RightTriangle::perimeter()
+// */
+//double
+//RightTriangle::perimeter() const {
+//  return hypotenuse_ + base_ + height_;
+//}
 
 //  MARK: - Class EquilateralTriangle Implementation.
 /*
  *  MARK: EquilateralTriangle::EquilateralTriangle() - default c'tor
  */
 EquilateralTriangle::EquilateralTriangle(double base) {
-  base_ = base;
+  sideA_ = sideB_ = base_ = base;
   height_ = sqrt(3.0) / 2 * base_;
   //height_ = sqrt( (base * base) - ((base / 2) * (base / 2)) );
   //height_ = sqrt( (base * base) - (base * base / 4) );
@@ -440,22 +460,22 @@ EquilateralTriangle::display() const {
   return disp.str();
 }
 
-/*
- *  MARK: EquilateralTriangle::dimensions()
- */
-std::tuple<double, double, double, double>
-EquilateralTriangle::dimensions() const {
-  auto rt = std::make_tuple(base_, height_, NAN, NAN);
-  return rt;
-}
+///*
+// *  MARK: EquilateralTriangle::dimensions()
+// */
+//std::tuple<double, double, double, double>
+//EquilateralTriangle::dimensions() const {
+//  auto rt = std::make_tuple(base_, height_, NAN, NAN);
+//  return rt;
+//}
 
-/*
- *  MARK: EquilateralTriangle::perimeter()
- */
-double
-EquilateralTriangle::perimeter() const {
-  return base_ + base_ + base_;
-}
+///*
+// *  MARK: EquilateralTriangle::perimeter()
+// */
+//double
+//EquilateralTriangle::perimeter() const {
+//  return sideA_ + sideB_ + base_;
+//}
 
 /*
  *  MARK: EquilateralTriangle::area()
@@ -472,7 +492,7 @@ EquilateralTriangle::area() const {
 IsoscelesTriangle::IsoscelesTriangle(double base, double height) {
   base_ = base;
   height_ = height;
-  hypotenuse_ = sqrt((base_ * base_ / 4) + (height_ * height_));
+  sideA_ = sideB_ = sqrt((base_ * base_ / 4) + (height_ * height_));
 }
 
 /*
@@ -483,16 +503,16 @@ IsoscelesTriangle::display() const {
   std::ostringstream disp;
   disp << "base " << base_
        << ", height " << height_
-       << ", hypotenuse " << hypotenuse_
+       << ", side length " << sideA_
        << ", perimeter " << perimeter()
        << ", area " << std::fixed << area();
   return disp.str();
 }
 
-/*
- *  MARK: IsoscelesTriangle::perimeter()
- */
-double
-IsoscelesTriangle::perimeter() const {
-  return hypotenuse_ + hypotenuse_ + base_;
-}
+///*
+// *  MARK: IsoscelesTriangle::perimeter()
+// */
+//double
+//IsoscelesTriangle::perimeter() const {
+//  return sideA_ + sideB_ + base_;
+//}
