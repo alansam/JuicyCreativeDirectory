@@ -103,7 +103,6 @@ public:
   RightTriangle(double base = 0, double height = 0);
   virtual ~RightTriangle() = default;
   std::string display() const override;
-//  double perimeter() const override;
 
 protected:
   double hypotenuse_;
@@ -117,7 +116,6 @@ public:
   IsoscelesTriangle(double base = 0, double height = 0);
   virtual ~IsoscelesTriangle() = default;
   std::string display() const override;
-//  double perimeter() const override;
 };
 
 /*
@@ -128,10 +126,7 @@ public:
   EquilateralTriangle(double base = 0);
   virtual ~EquilateralTriangle() = default;
   virtual std::string display() const override;
-//  virtual double perimeter() const override;
   virtual double area() const override;
-//  virtual std::tuple<double, double, double, double>
-//    dimensions() const override;
 };
 
 //  MARK: - Implementation.
@@ -428,14 +423,6 @@ RightTriangle::display() const {
   return disp.str();
 }
 
-///*
-// *  MARK: RightTriangle::perimeter()
-// */
-//double
-//RightTriangle::perimeter() const {
-//  return hypotenuse_ + base_ + height_;
-//}
-
 //  MARK: - Class EquilateralTriangle Implementation.
 /*
  *  MARK: EquilateralTriangle::EquilateralTriangle() - default c'tor
@@ -443,6 +430,7 @@ RightTriangle::display() const {
 EquilateralTriangle::EquilateralTriangle(double base) {
   sideA_ = sideB_ = base_ = base;
   height_ = sqrt(3.0) / 2 * base_;
+  //  TODO: there's more than one way to do it (tmtowtdi]
   //height_ = sqrt( (base * base) - ((base / 2) * (base / 2)) );
   //height_ = sqrt( (base * base) - (base * base / 4) );
 }
@@ -459,23 +447,6 @@ EquilateralTriangle::display() const {
         << ", area " << std::fixed << area();
   return disp.str();
 }
-
-///*
-// *  MARK: EquilateralTriangle::dimensions()
-// */
-//std::tuple<double, double, double, double>
-//EquilateralTriangle::dimensions() const {
-//  auto rt = std::make_tuple(base_, height_, NAN, NAN);
-//  return rt;
-//}
-
-///*
-// *  MARK: EquilateralTriangle::perimeter()
-// */
-//double
-//EquilateralTriangle::perimeter() const {
-//  return sideA_ + sideB_ + base_;
-//}
 
 /*
  *  MARK: EquilateralTriangle::area()
@@ -508,11 +479,3 @@ IsoscelesTriangle::display() const {
        << ", area " << std::fixed << area();
   return disp.str();
 }
-
-///*
-// *  MARK: IsoscelesTriangle::perimeter()
-// */
-//double
-//IsoscelesTriangle::perimeter() const {
-//  return sideA_ + sideB_ + base_;
-//}
