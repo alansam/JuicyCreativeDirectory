@@ -5,6 +5,9 @@
 //  Created by Alan Sampson on 2/2/21.
 //  2021-02-02 03:23:35.0492
 //
+//  MARK: - References.
+//  @see: https://www.cprogramming.com/tutorial/virtual_inheritance.html
+//
 
 #include <iostream>
 #include <iomanip>
@@ -29,7 +32,7 @@ public:
 /*
  *  MARK: Class Rectangle
  */
-class Rectangle : public Shape {
+class Rectangle : public virtual Shape {
 public:
   Rectangle(double length = 0, double breadth = 0);
   virtual ~Rectangle() = default;
@@ -48,7 +51,7 @@ protected:
 /*
  *  MARK: Class Square
  */
-class Square final : public Rectangle {
+class Square final : public virtual Rectangle {
 public:
   Square(double length = 0);
   virtual ~Square() = default;
@@ -60,7 +63,7 @@ public:
 /*
  *  MARK: Class Triangle
  */
-class Triangle : public Shape {
+class Triangle : public virtual Shape {
 public:
   Triangle(double base = 0, double height = 0);
   virtual ~Triangle() = default;
@@ -80,7 +83,7 @@ protected:
 /*
  *  MARK: Class Circle
  */
-class Circle final : public Shape {
+class Circle final : public virtual Shape {
 public:
   Circle(double radius = 0);
   virtual ~Circle() = default;
@@ -98,7 +101,7 @@ private:
 /*
  *  MARK: Class RightTriangle
  */
-class RightTriangle : public Triangle {
+class RightTriangle : public virtual Triangle {
 public:
   RightTriangle(double base = 0, double height = 0);
   virtual ~RightTriangle() = default;
@@ -111,7 +114,7 @@ protected:
 /*
  *  MARK: Class IsoscelesTriangle
  */
-class IsoscelesTriangle : public Triangle {
+class IsoscelesTriangle : public virtual Triangle {
 public:
   IsoscelesTriangle(double base = 0, double height = 0);
   virtual ~IsoscelesTriangle() = default;
@@ -121,12 +124,26 @@ public:
 /*
  *  MARK: Class EquilateralTriangle
  */
-class EquilateralTriangle final : public IsoscelesTriangle {
+class EquilateralTriangle final : public virtual IsoscelesTriangle {
 public:
   EquilateralTriangle(double base = 0);
   virtual ~EquilateralTriangle() = default;
   virtual std::string display() const override;
   virtual double area() const override;
+};
+
+/*
+ *  MARK: Class RightIsoscelesTriangle
+ */
+class RightIsoscelesTriangle
+  : public virtual IsoscelesTriangle, public virtual RightTriangle {
+public:
+  RightIsoscelesTriangle(double height = 0);
+  virtual ~RightIsoscelesTriangle() = default;
+  std::string display() const override;
+
+protected:
+    double height2_;
 };
 
 //  MARK: - Implementation.
@@ -141,21 +158,24 @@ int main() {
   auto xshape = RightTriangle(3., 4.);
   auto qshape = EquilateralTriangle(4.0);
   auto ishape = IsoscelesTriangle(6., 4.);
+  auto jshape = RightIsoscelesTriangle(5.);
 
-  std::cout << "Rectangle            : "
+  std::cout << "Rectangle               : "
             << rshape.display() << '\n';
-  std::cout << "Square               : "
+  std::cout << "Square                  : "
             << sshape.display() << '\n';
-  std::cout << "Triangle             : "
+  std::cout << "Triangle                : "
             << tshape.display() << '\n';
-  std::cout << "Circle               : "
+  std::cout << "Circle                  : "
             << cshape.display() << '\n';
-  std::cout << "Right Triangle       : "
+  std::cout << "Right Triangle          : "
             << xshape.display() << '\n';
-  std::cout << "Equilateral Triangle : "
+  std::cout << "Equilateral Triangle    : "
             << qshape.display() << '\n';
-  std::cout << "Isosceles Triangle   : "
+  std::cout << "Isosceles Triangle      : "
             << ishape.display() << '\n';
+  std::cout << "RightIsosceles Triangle : "
+            << jshape.display() << '\n';
   std::cout << std::endl;
 
   {
@@ -212,6 +232,16 @@ int main() {
     auto [base, height, sideA, sideB] = ishape.dimensions();
     std::cout << "base " << base
               << " sides " << sideA
+              << "\nheight " << height << '\n';
+    std::cout << "perimiter " << ishape.perimeter() << '\n';
+    std::cout << std::endl;
+  }
+
+  {
+    std::cout << "Shape - RightIsoscelesTriangle\n";
+    auto [base, height, sideA, sideB] = jshape.dimensions();
+    std::cout << "base " << base
+              << " sides " << sideA << ", " << sideB
               << "\nheight " << height << '\n';
     std::cout << "perimiter " << ishape.perimeter() << '\n';
     std::cout << std::endl;
@@ -307,7 +337,7 @@ Triangle::Triangle(double base, double height)
  */
 std::tuple<double, double, double, double>
 Triangle::dimensions() const {
-  auto rt = std::make_tuple(base_, height_, sideB_, sideB_);
+  auto rt = std::make_tuple(base_, height_, sideA_, sideB_);
   return rt;
 }
 
@@ -406,7 +436,7 @@ Circle::circumference() const {
 RightTriangle::RightTriangle(double base, double height) {
   base_  = base;
   sideA_ = height_ = height;
-  sideB_ = hypotenuse_ = std::sqrt((base_ * base_) + (height_ * height_));
+  sideB_ = hypotenuse_ = std::hypot(base_, height_);
 }
 
 /*
@@ -429,10 +459,10 @@ RightTriangle::display() const {
  */
 EquilateralTriangle::EquilateralTriangle(double base) {
   sideA_ = sideB_ = base_ = base;
-  height_ = sqrt(3.0) / 2 * base_;
+  height_ = std::sqrt(3.0) / 2 * base_;
   //  TODO: there's more than one way to do it (tmtowtdi]
-  //height_ = sqrt( (base * base) - ((base / 2) * (base / 2)) );
-  //height_ = sqrt( (base * base) - (base * base / 4) );
+  //height_ = std::sqrt( (base * base) - ((base / 2) * (base / 2)) );
+  //height_ = std::sqrt( (base * base) - (base * base / 4) );
 }
 
 /*
@@ -453,7 +483,7 @@ EquilateralTriangle::display() const {
  */
 double
 EquilateralTriangle::area() const {
-  return sqrt(3.0) / 4 * (base_ * base_);
+  return std::sqrt(3.0) / 4 * (base_ * base_);
 }
 
 //  MARK: - Class IsoscelesTriangle Implementation.
@@ -463,7 +493,8 @@ EquilateralTriangle::area() const {
 IsoscelesTriangle::IsoscelesTriangle(double base, double height) {
   base_ = base;
   height_ = height;
-  sideA_ = sideB_ = sqrt((base_ * base_ / 4) + (height_ * height_));
+  sideA_ = sideB_ = std::hypot(base_ / 2., height_);
+  //  std::sqrt((base_ * base_ / 4) + (height_ * height_));
 }
 
 /*
@@ -477,5 +508,30 @@ IsoscelesTriangle::display() const {
        << ", side length " << sideA_
        << ", perimeter " << perimeter()
        << ", area " << std::fixed << area();
+  return disp.str();
+}
+
+//  MARK: - Class RightIsoscelesTriangle Implementation.
+/*
+ *  MARK: RightIsoscelesTriangle::RightIsoscelesTriangle() - default c'tor
+ */
+RightIsoscelesTriangle::RightIsoscelesTriangle(double height) {
+  height_ = base_ = sideA_ = height;
+  hypotenuse_ = sideB_ = std::hypot(base_, height_);
+  height2_ = std::sqrt((height_ * height_) - (sideB_ * sideB_ / 4.0));
+}
+
+/*
+ *  MARK: display()
+ */
+std::string RightIsoscelesTriangle::display() const {
+  std::ostringstream disp;
+  disp << "base " << base_
+       << ", height " << height_
+       << ", (sides " << sideA_ << ", " << sideB_ << ")"
+       << ", hypotenuse " << hypotenuse_
+       << ", (height 2) " << height2_
+       << ", perimiter " << perimeter()
+       << ", area " << area();
   return disp.str();
 }
